@@ -1,6 +1,6 @@
 # isONclust3
-A rust implementation of a novel de novo clustering algorithm.
-isONclust3 is a tool for clustering either PacBio Iso-Seq reads, or Oxford Nanopore reads into clusters, where each cluster represents all reads that came from a gene family. Output is a tsv file with each read assigned to a cluster-ID and a folder 'fastq' containing one fastq file per cluster generated. Detailed information is available in the isONclust3 paper.
+
+isONclust3 is a tool for clustering either PacBio Iso-Seq reads, or Oxford Nanopore reads into clusters, where each cluster represents all reads that came from a gene family. Output is a tsv file with each read assigned to a cluster-ID and a folder 'fastq' containing one fastq file per cluster generated. Detailed information is available in the [isONclust3 paper](https://doi.org/10.1093/bioinformatics/btaf207).
 
 # Table of contents
 1. [Installation](#installation)
@@ -71,4 +71,4 @@ alexander.petri[at]math.su.se
 
 Please cite this study when using isONclust3:
 
-Alexander J. Petri, Kristoffer Sahlin. De novo clustering of extensive long-read transcriptome datasets with isONclust3. bioRxiv 2024.10.29.620862; doi: [https://doi.org/10.1101/2024.10.29.620862](https://doi.org/10.1101/2024.10.29.620862)
+Alexander J Petri, Kristoffer Sahlin, De novo clustering of large long-read transcriptome datasets with isONclust3, Bioinformatics, 2025;, btaf207, [https://doi.org/10.1093/bioinformatics/btaf207](https://doi.org/10.1093/bioinformatics/btaf207).
