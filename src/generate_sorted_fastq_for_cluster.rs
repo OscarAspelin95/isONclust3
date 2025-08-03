@@ -9,7 +9,7 @@ use std::path::Path;
 use std::time::Instant;
 //use crate::bio_rust_file_read;
 use bio::io::fastq;
-use log::debug;
+use log::{debug, info};
 use minimizer_iter::MinimizerBuilder;
 use rustc_hash::FxHashMap;
 use std::fs;
@@ -197,7 +197,7 @@ fn analyse_fastq_and_sort(
                     );
                 }
             } else {
-                println!("No seeding");
+                debug!("No seeding");
             }
             seeding_and_filtering_seeds::filter_seeds_by_quality(
                 &this_minimizers,
@@ -222,11 +222,11 @@ fn analyse_fastq_and_sort(
     if verbose {
         let print_vec = &score_vec[0..5];
         for score_tup in print_vec {
-            println!("ID {} count {}", &score_tup.0, score_tup.1);
+            debug!("ID {} count {}", &score_tup.0, score_tup.1);
         }
     }
 
-    println!("{} reads accepted", score_vec.len());
+    info!("{} reads accepted", score_vec.len());
     debug!("{:?}", score_vec.pop());
 }
 
@@ -236,8 +236,8 @@ fn print_statistics(fastq_records: &[FastqRecord_isoncl_init]) {
      */
     let min_e = fastq_records[0].get_err_rate();
     let max_e = fastq_records[fastq_records.len() - 1].get_err_rate();
-    println!("Lowest read error rate: {}", min_e);
-    println!("Highest read error rate: {}", max_e);
+    info!("Lowest read error rate: {}", min_e);
+    info!("Highest read error rate: {}", max_e);
     //logfile.write("Median read error rate:{0}\n".format(median_e))
     //logfile.write("Mean read error rate:{0}\n".format(mean_e))
 }
@@ -255,7 +255,7 @@ pub(crate) fn sort_fastq_for_cluster(
     noncanonical_bool: bool,
     verbose: bool,
 ) {
-    println!("Sorting the fastq_file");
+    info!("Sorting the fastq_file");
     let now = Instant::now();
     //holds the internal ids and scores as tuples to be able to sort properly
     let mut score_vec = vec![];
@@ -277,12 +277,12 @@ pub(crate) fn sort_fastq_for_cluster(
         verbose,
     );
     let elapsed = now.elapsed();
-    println!("Elapsed: {:.2?}", elapsed);
+    info!("Elapsed: {:.2?}", elapsed);
     if !path_exists(outfolder) {
         fs::create_dir(outfolder.clone()).expect("We should be able to create the directory");
     }
     //write a fastq-file that contains the reordered reads
     write_output::write_ordered_fastq(&score_vec, outfolder, &id_map, in_file_path);
-    println!("Wrote the sorted fastq file");
+    info!("Wrote the sorted fastq file");
     //print_statistics(fastq_records.borrow());
 }

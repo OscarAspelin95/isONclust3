@@ -6,6 +6,7 @@ use bio::io::gff;
 use rustc_hash::{FxHashMap, FxHashSet};
 
 use bio::io::gff::GffType::GFF3;
+use log::info;
 use rayon::prelude::*;
 
 use bio::io::fasta;
@@ -48,7 +49,7 @@ fn parse_fasta_and_gen_clusters(
     k: usize,
     w: usize,
 ) {
-    println!("parse_fasta");
+    info!("parse_fasta");
     let path = fasta_path.unwrap();
     let mut reader =
         fasta::Reader::from_file(Path::new(path)).expect("We expect the file to exist");
@@ -62,7 +63,7 @@ fn parse_fasta_and_gen_clusters(
         let mut overlap_ctr = 0;
         //in the next lines we make sure that we have a proper header and store it as string
         let id = seq_rec.id().to_string().split(' ').collect::<Vec<_>>()[0].to_string();
-        println!("Now to the coords_ds");
+        info!("Now to the coords_ds");
         if let Some(gene_map) = coords.get(id.as_str()) {
             //iterate over the genes in the gene_map
             for (gene_id, exon_coords) in gene_map {
@@ -93,7 +94,7 @@ fn parse_fasta_and_gen_clusters(
                 internal_id += 1;
             }
         }
-        println!("{} overlaps between genes (their exons) ", overlap_ctr);
+        info!("{} overlaps between genes (their exons) ", overlap_ctr);
     });
 }
 
@@ -164,27 +165,27 @@ pub(crate) fn resolve_gff(
     k: usize,
     w: usize,
 ) {
-    println!("Resolving GFF file ");
+    info!("Resolving GFF file ");
     let now1 = Instant::now();
     let mut coords = FxHashMap::default(); //: HashMap<K, HashMap<i32, Vec<Coord_obj>, BuildHasherDefault<FxHasher>>, BuildHasherDefault<FxHasher>> = FxHashMap::default();
     parse_gtf_and_collect_coords(gff_path, &mut coords);
-    println!(
+    info!(
         "{} s used for parsing the gff file",
         now1.elapsed().as_secs()
     );
-    println!("First step done");
+    info!("First step done");
     let now2 = Instant::now();
     parse_fasta_and_gen_clusters(fasta_path, coords, clusters, cluster_map, k, w);
-    println!(
+    info!(
         "Generated {} initial clusters from the reference",
         clusters.len()
     );
-    println!(
+    info!(
         "{} s used for parsing the fasta file",
         now2.elapsed().as_secs()
     );
-    println!("{} s for full GFF resolution", now1.elapsed().as_secs());
-    println!("GTF resolved");
+    info!("{} s for full GFF resolution", now1.elapsed().as_secs());
+    info!("GTF resolved");
 }
 
 pub(crate) fn gff_based_clustering(
@@ -282,7 +283,7 @@ pub(crate) fn gff_based_clustering(
                 let id_vec = vec![];
                 clusters.insert(gene_id, id_vec);
             } else {
-                println!(
+                info!(
                     "found {} genes in {}",
                     gene_id - previous_genes,
                     scaffold_id

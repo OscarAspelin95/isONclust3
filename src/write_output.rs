@@ -1,6 +1,7 @@
 use crate::structs::FastqRecord_isoncl_init;
 use crate::{file_actions, Cluster_ID_Map};
 use log::debug;
+use log::info;
 use rayon::prelude::*;
 use rustc_hash::FxHashMap;
 use std::fs;
@@ -53,7 +54,7 @@ fn write_final_clusters_tsv(
     let f = File::create(file_path).expect("unable to create file");
     let mut buf_write = BufWriter::new(&f);
     let mut nr_reads = 0;
-    println!("{} different clusters identified", clusters.len());
+    info!("{} different clusters identified", clusters.len());
     //let nr_clusters=clusters.len();
     for (cl_id, r_int_ids) in clusters.into_iter() {
         debug!("cl_id {}, nr_reads {:?}", cl_id, nr_reads);
@@ -68,7 +69,7 @@ fn write_final_clusters_tsv(
     buf_write.flush().expect("Failed to flush the buffer");
     // debug!("{} different clusters identified", nr_clusters);
     debug!("HCLM {:?}", header_cluster_map);
-    println!("{} reads added to tsv file", nr_reads);
+    info!("{} reads added to tsv file", nr_reads);
 }
 
 //TODO: this is the current RAM bottleneck: we read the whole file to then have the reads when we write the output
@@ -131,7 +132,7 @@ fn write_fastq_files(
 
         debug!("cl id for writing: {}, {}", cl_id, read_cter);
     }
-    println!("{} reads written", read_cter);
+    info!("{} reads written", read_cter);
 }
 
 pub fn path_exists(path: &str) -> bool {
@@ -172,7 +173,7 @@ pub(crate) fn write_output(
         //create a data structure that we use to generate the proper fastq files
         create_final_ds(header_cluster_map, fastq, &mut cluster_hashmap_fastq_record);
         debug!("Cluster_hashmap: {}", cluster_hashmap_fastq_record.len());
-        println!("Writing the fastq files");
+        info!("Writing the fastq files");
         write_fastq_files(&fastq_path, cluster_hashmap_fastq_record, n);
     }
 }

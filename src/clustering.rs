@@ -95,7 +95,10 @@ pub(crate) fn cluster(
     else {
         let mut most_shared_cluster = -1;
         let mut shared = false;
-        // println!("shared_seed_infos_norm_vec BEFORE: {:?}", shared_seed_infos_norm_vec);
+        debug!(
+            "shared_seed_infos_norm_vec BEFORE: {:?}",
+            shared_seed_infos_norm_vec
+        );
 
         for minimizer in minimizers {
             //TODO: test whether into_par_iter works here
@@ -156,7 +159,7 @@ pub(crate) fn cluster(
                         .or_default();
                     let vect = cluster_map.get_mut(&sign_mini.sequence).unwrap();
                     if !vect.contains(&cl_id) {
-                        // println!(" cl_id: {}  &cl_id {}", cl_id, &cl_id );
+                        debug!(" cl_id: {}  &cl_id {}", cl_id, &cl_id);
                         vect.push(cl_id);
                     }
                 }
@@ -255,8 +258,8 @@ fn detect_overlaps(
             //We only merge if we share more than min_shared_minis
             if shared_perc > min_shared_minis {
                 if verbose {
-                    println!("CL_ID {}, msc {}", cl_id, most_shared_cluster_id);
-                    println!(
+                    debug!("CL_ID {}, msc {}", cl_id, most_shared_cluster_id);
+                    debug!(
                         "nr_minis {}, max_shared {}, shared_perc {}",
                         nr_minis, max_shared, shared_perc
                     );
@@ -326,11 +329,11 @@ pub(crate) fn cluster_merging(
     verbose: bool,
 ) {
     //let min_shared_minis_pc = 0.5;
-    println!("min_shared_minis_pc: {}", min_shared_minis);
+    debug!("min_shared_minis_pc: {}", min_shared_minis);
     //cl_set_map is a hashmap with cl_id -> Hashset of seed hashes
     let mut cl_set_map: FxHashMap<i32, Vec<u64>> = FxHashMap::default();
     if verbose {
-        println!("Cl_set_map {:?}", cl_set_map.len());
+        debug!("Cl_set_map {:?}", cl_set_map.len());
     }
     //merge_into is a vector of a tuple(cl_id1,cl_id2)
     let mut merge_into: Vec<(i32, i32)> = vec![];
@@ -343,7 +346,7 @@ pub(crate) fn cluster_merging(
     while !merge_into.is_empty() || first_iter {
         //clear merge_into as this is the indicator how often we attempt to merge further (the while loop depends on it)
         merge_into.clear();
-        println!("MI {:?}", merge_into);
+        debug!("MI {:?}", merge_into);
         small_hs.clear();
         //set first_iter to be false to not stay in a infinity loop
         first_iter = false;
@@ -351,8 +354,8 @@ pub(crate) fn cluster_merging(
         //generate the data structure giving us merge infos
         let now_pc1 = Instant::now();
         generate_cluster_merging_ds(&mut cl_set_map, cluster_map);
-        println!("{} s for creating the pc ds", now_pc1.elapsed().as_secs());
-        println!("Post_clustering_ds generated");
+        debug!("{} s for creating the pc ds", now_pc1.elapsed().as_secs());
+        debug!("Post_clustering_ds generated");
         let now_pc2 = Instant::now();
         detect_overlaps(
             &mut cl_set_map,
@@ -363,12 +366,12 @@ pub(crate) fn cluster_merging(
             shared_seed_infos_vec,
             verbose,
         );
-        println!(
+        debug!(
             "{} s for detection of overlaps",
             now_pc2.elapsed().as_secs()
         );
         if verbose {
-            println!("Merge_into {:?}", merge_into);
+            debug!("Merge_into {:?}", merge_into);
         }
         let now_pc3 = Instant::now();
         merge_clusters_from_merge_into(
@@ -379,15 +382,15 @@ pub(crate) fn cluster_merging(
             &small_hs,
             &mut not_large,
         );
-        println!("{} s for merging of clusters", now_pc3.elapsed().as_secs());
+        debug!("{} s for merging of clusters", now_pc3.elapsed().as_secs());
         let now_pc4 = Instant::now();
         merge_into.retain(|&(_, second)| !not_large.contains(&second));
-        println!("{} s for retaining merge_into", now_pc4.elapsed().as_secs());
-        println!("{} s since create ds", now_pc2.elapsed().as_secs());
+        debug!("{} s for retaining merge_into", now_pc4.elapsed().as_secs());
+        debug!("{} s since create ds", now_pc2.elapsed().as_secs());
 
         cl_set_map.clear();
     }
-    println!("min_shared_minis_pc: {}", min_shared_minis);
+    debug!("min_shared_minis_pc: {}", min_shared_minis);
 }
 
 pub(crate) fn generate_initial_cluster_map(
