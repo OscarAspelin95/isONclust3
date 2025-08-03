@@ -33,12 +33,12 @@ cargo build --release
 The executable is then located in folder `target/release`.
 
 ### Testing the installation <a name="installation"></a>
-Run `target/release/isONclust3 --fastq Example_data/test_data.fastq --mode ont --outfolder Example_out --seeding minimizer --post-cluster`. 
+Run `target/release/isONclust3 --fastq example_data/test_data.fastq --mode ont --outfolder example_out --seeding minimizer --post-cluster`.
 
-This generates an output directory in the repository folder. The fastq_files folder inside clustering should now contain 94 fastq files(each representing one cluster). 
+This generates an output directory in the repository folder. The fastq_files folder inside clustering should now contain 94 fastq files(each representing one cluster).
 
 # Running isONclust3 <a name="Running"></a>
-IsONclust3 can be used on either Pacbio data or ONT data. 
+IsONclust3 can be used on either Pacbio data or ONT data.
 
 ```
 isONclust3 --fastq {input.fastq} --mode ont  --outfolder {outfolder}         # Oxford Nanopore reads
