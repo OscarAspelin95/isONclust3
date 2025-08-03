@@ -3,7 +3,6 @@ use crate::structs::{FastqRecord_isoncl_init, Minimizer_hashed};
 use crate::write_output;
 use crate::write_output::path_exists;
 use rayon::prelude::*;
-use std::collections::HashSet;
 use std::collections::VecDeque;
 use std::path::Path;
 use std::time::Instant;
@@ -122,7 +121,7 @@ fn analyse_fastq_and_sort(
     //read_id holds the internal id we appoint to a read
     let mut read_id = 0;
     //generate a Reader object that parses the fastq-file (taken from rust-bio)
-    let mut reader =
+    let reader =
         fastq::Reader::from_file(Path::new(&in_file_path)).expect("We expect the file to exist");
     //make sure that we have suitable values for k_size and w_size (w_size should be larger)
     let mut w;

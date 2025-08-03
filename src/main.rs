@@ -27,7 +27,6 @@ use std::collections::VecDeque;
 use std::time::Instant;
 
 use std::convert::TryFrom;
-use std::io::Read;
 use std::path::Path;
 
 use memory_stats::memory_stats;
@@ -246,7 +245,7 @@ fn main() {
     let mut t;
     let mut quality_threshold;
     let mut min_shared_minis;
-    let mut cm_mini;
+    let cm_mini;
     //right now we only have two modes( custom settings for variables k, w, s, and t: 'ont' for reads with  3% error rate or more and 'pacbio' for reads with less than 3% error rate)
     if mode == "ont" {
         k = 13;

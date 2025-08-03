@@ -119,7 +119,7 @@ pub(crate) fn cluster(
             .max_by_key(|&(_, value)| value)
         {
             let nr_minis = minimizers.len();
-            let mut shared_perc: f64;
+            let shared_perc: f64;
             //we have more shared minis with the cluster than our threshold and this is the cluster we share the most minimizers with
             shared_perc = calculate_shared_perc(nr_minis, *max_shared);
             if shared_perc > min_shared_minis {
@@ -209,7 +209,7 @@ fn update_clusters(
     //also add the hashes of the small cluster into the large cluster
     if !small_hs.is_empty() {
         for seed_hash in small_hs {
-            let mut cl_vec = clusters_map.get_mut(seed_hash).unwrap();
+            let cl_vec = clusters_map.get_mut(seed_hash).unwrap();
             if !cl_vec.contains(large_cluster_id) {
                 cl_vec.push(*large_cluster_id);
             }

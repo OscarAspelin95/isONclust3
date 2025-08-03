@@ -51,7 +51,7 @@ fn parse_fasta_and_gen_clusters(
 ) {
     info!("parse_fasta");
     let path = fasta_path.unwrap();
-    let mut reader =
+    let reader =
         fasta::Reader::from_file(Path::new(path)).expect("We expect the file to exist");
     //let mut reader = parse_fastx_file(&filename).expect("valid path/file");
     reader.records().into_iter().for_each(|record| {
@@ -107,7 +107,7 @@ fn parse_gtf_and_collect_coords(
     let mut coords_in_gene = FxHashSet::default();
     let mut true_gene = false;
     for record in reader.expect("The reader should find records").records() {
-        let mut rec = record.ok().expect("Error reading record.");
+        let rec = record.ok().expect("Error reading record.");
         //we have a new gene
         if rec.feature_type() == "gene" {
             //|| rec.feature_type() == "pseudogene"{
