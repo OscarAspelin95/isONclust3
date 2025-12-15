@@ -4,7 +4,7 @@ name = "isONclust3"
 version = "0.3.0"
 edition = "2021"
 repository = "https://github.com/aljpetri/isONclust3"
-license = "MIT"
+license = "GPL3.0"
 description = "Rust implementation of a novel de novo clustering algorithm. isONclust3 is a tool for clustering either PacBio Iso-Seq reads, or Oxford Nanopore reads into clusters, where each cluster represents all reads that came from a gene family. Output is a tsv file with each read assigned to a cluster-ID and a folder 'fastq' containing one fastq file per cluster generated. Detailed information is available in the isONclust3 paper."
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
