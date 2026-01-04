@@ -1,9 +1,7 @@
-
 //use bio::io::fastq;
 //use bio::io::bed::Record;
 //use std::path::Path;
 //use rayon::prelude::*;
-
 
 /*fn split_in_batches(n_threads: usize, score_vec: Vec<(i32,usize)>, reads_split: &mut Vec<Vec<i32>>) {
     let each_len = score_vec.len() / n_threads + if score_vec.len() % n_threads == 0 {0} else {1};
@@ -16,5 +14,3 @@
     //}
 
 }*/
-
-

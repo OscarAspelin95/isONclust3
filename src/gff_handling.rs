@@ -51,10 +51,9 @@ fn parse_fasta_and_gen_clusters(
 ) {
     info!("parse_fasta");
     let path = fasta_path.unwrap();
-    let mut reader =
-        fasta::Reader::from_file(Path::new(path)).expect("We expect the file to exist");
+    let reader = fasta::Reader::from_file(Path::new(path)).expect("We expect the file to exist");
     //let mut reader = parse_fastx_file(&filename).expect("valid path/file");
-    reader.records().into_iter().for_each(|record| {
+    reader.records().for_each(|record| {
         let mut internal_id = 0;
         let mut record_minis = vec![];
         //retreive the current record
@@ -107,7 +106,7 @@ fn parse_gtf_and_collect_coords(
     let mut coords_in_gene = FxHashSet::default();
     let mut true_gene = false;
     for record in reader.expect("The reader should find records").records() {
-        let mut rec = record.ok().expect("Error reading record.");
+        let rec = record.ok().expect("Error reading record.");
         //we have a new gene
         if rec.feature_type() == "gene" {
             //|| rec.feature_type() == "pseudogene"{
@@ -203,7 +202,7 @@ pub(crate) fn gff_based_clustering(
     // Read the FASTA file
     let fasta_reader = File::open(Path::new(fasta_path.unwrap())).unwrap();
     let fasta_buf_reader = BufReader::new(fasta_reader);
-    let mut fasta_records = fasta::Reader::new(fasta_buf_reader).records();
+    let fasta_records = fasta::Reader::new(fasta_buf_reader).records();
     // Read the GFF file
     let gff_reader = File::open(Path::new(gff_path.unwrap())).unwrap();
     let gff_buf_reader = BufReader::new(gff_reader);
@@ -212,7 +211,7 @@ pub(crate) fn gff_based_clustering(
     let mut gene_id = 0;
     let mut previous_genes = 0;
     // Iterate through FASTA records
-    while let Some(fasta_record) = fasta_records.next() {
+    for fasta_record in fasta_records {
         let fasta_record = fasta_record.expect("Error reading FASTA record");
         let scaffold_id = fasta_record.id().to_string();
         let sequence = std::str::from_utf8(fasta_record.seq())
@@ -222,7 +221,7 @@ pub(crate) fn gff_based_clustering(
         let mut is_gene = false;
         debug!("scaffold {}", scaffold_id);
         // Process GFF records for the current scaffold ID
-        while let Some(gff_record) = gff_records.next() {
+        for gff_record in gff_records.by_ref() {
             let gff_record = gff_record.expect("Error reading GFF record");
             let gff_scaffold_id = gff_record.seqname().to_string();
             // Check if the scaffold IDs match
@@ -247,7 +246,7 @@ pub(crate) fn gff_based_clustering(
                             for (minimizer, position) in min_iter {
                                 let mini = Minimizer_hashed {
                                     sequence: minimizer,
-                                    position: position,
+                                    position,
                                 };
                                 this_minimizers.push(mini);
                             }
@@ -260,21 +259,19 @@ pub(crate) fn gff_based_clustering(
                             for (minimizer, position, _) in min_iter {
                                 let mini = Minimizer_hashed {
                                     sequence: minimizer,
-                                    position: position,
+                                    position,
                                 };
                                 this_minimizers.push(mini);
                             }
                         }
-                    } else if seeding == "syncmer" {
-                        if exon_seq.len() > s {
-                            seeding_and_filtering_seeds::syncmers_canonical(
-                                exon_seq.as_bytes(),
-                                k,
-                                s,
-                                t,
-                                &mut this_minimizers,
-                            );
-                        }
+                    } else if seeding == "syncmer" && exon_seq.len() > s {
+                        seeding_and_filtering_seeds::syncmers_canonical(
+                            exon_seq.as_bytes(),
+                            k,
+                            s,
+                            t,
+                            &mut this_minimizers,
+                        );
                     }
                 } else if gff_record.feature_type() == "pseudogene" {
                     is_gene = false;

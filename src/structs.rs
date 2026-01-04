@@ -6,25 +6,21 @@ pub enum Cluster<T, U> {
     mini_seqs(HashSet<U>),
 }
 
-
 /// Represents a minimizer along with its starting position in the input string.
 /// TODO: rename to indexer or similar
-#[derive(Debug,Eq, PartialEq,Clone)]
+#[derive(Debug, Eq, PartialEq, Clone)]
 pub struct Minimizer {
     pub sequence: String,
     pub position: usize,
     // pub is_representative: bool
 }
 
-#[derive(Debug,Eq, PartialEq,Clone)]
+#[derive(Debug, Eq, PartialEq, Clone)]
 pub struct Minimizer_hashed {
     pub sequence: u64,
     pub position: usize,
     // pub is_representative: bool
 }
-
-
-
 
 pub(crate) struct GtfEntry {
     pub seqname: String,
@@ -44,10 +40,10 @@ impl fmt::Display for GtfEntry {
     }
 }
 
-#[derive(Debug,Eq, PartialEq,Hash,Clone)]
-pub(crate) struct Coord_obj{
+#[derive(Debug, Eq, PartialEq, Hash, Clone)]
+pub(crate) struct Coord_obj {
     pub startpos: u64,
-    pub endpos: u64
+    pub endpos: u64,
 }
 impl fmt::Display for Coord_obj {
     // enables displaying the fasta record
@@ -55,19 +51,17 @@ impl fmt::Display for Coord_obj {
         write!(f, "{}, {}", self.startpos, self.endpos)
     }
 }
-impl Coord_obj{
-    pub fn overlaps_with(&self,other:&Coord_obj)-> bool{
-        let mut overlaps=false;
-        if (self.startpos <= other.endpos && self.endpos >= other.startpos) || (other.startpos <= self.endpos && other.endpos >= self.startpos) {
-            overlaps=true;
+impl Coord_obj {
+    pub fn overlaps_with(&self, other: &Coord_obj) -> bool {
+        let mut overlaps = false;
+        if (self.startpos <= other.endpos && self.endpos >= other.startpos)
+            || (other.startpos <= self.endpos && other.endpos >= self.startpos)
+        {
+            overlaps = true;
         }
         overlaps
     }
-
 }
-
-
-
 
 #[derive(Clone)]
 pub(crate) struct FastaRecord {
@@ -76,14 +70,12 @@ pub(crate) struct FastaRecord {
     pub sequence: String,
 }
 
-
 impl fmt::Display for FastaRecord {
     // enables displaying the fasta record
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         write!(f, "{}\n{}", self.header, self.sequence)
     }
 }
-
 
 pub(crate) struct FastqRecord {
     //a struct used to store fastq records
@@ -99,14 +91,13 @@ impl fmt::Display for FastqRecord {
     }
 }
 
-
 pub(crate) struct FastqRecord_isoncl_init {
     //a struct used to store fastq records
     pub header: String,
     pub sequence: String,
     pub quality: String,
     pub score: f64,
-    pub error_rate:f64,
+    pub error_rate: f64,
 }
 pub(crate) struct internal_gff {
     pub seqname: String,
@@ -115,25 +106,30 @@ pub(crate) struct internal_gff {
     pub end_coord: u64,
 }
 
-impl FastqRecord_isoncl_init{
-    pub fn get_header(&self)->&str{
+impl FastqRecord_isoncl_init {
+    pub fn get_header(&self) -> &str {
         &self.header
     }
     //pub fn get_int_id(&self)->&i32{
-       // &self.internal_id
+    // &self.internal_id
     //}
-    pub fn get_sequence(&self)->&str{
+    pub fn get_sequence(&self) -> &str {
         &self.sequence
     }
-    pub fn get_quality(&self)->&str{
+    pub fn get_quality(&self) -> &str {
         &self.quality
     }
     //pub fn get_score(&self)->&f64{ &self.score }
-    pub fn get_err_rate(&self)->&f64{&self.error_rate}
-    pub fn set_error_rate(&mut self, new_error_rate: f64){ self.error_rate = new_error_rate }
-    pub fn set_score(&mut self, new_score: f64) { self.score = new_score }
+    pub fn get_err_rate(&self) -> &f64 {
+        &self.error_rate
+    }
+    pub fn set_error_rate(&mut self, new_error_rate: f64) {
+        self.error_rate = new_error_rate
+    }
+    pub fn set_score(&mut self, new_score: f64) {
+        self.score = new_score
+    }
 }
-
 
 impl fmt::Display for FastqRecord_isoncl_init {
     // enables displaying the fastq record
@@ -141,4 +137,3 @@ impl fmt::Display for FastqRecord_isoncl_init {
         write!(f, "{}\n{}", self.header, self.sequence)
     }
 }
-

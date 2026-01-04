@@ -119,9 +119,9 @@ pub(crate) fn cluster(
             .max_by_key(|&(_, value)| value)
         {
             let nr_minis = minimizers.len();
-            let mut shared_perc: f64;
+            
             //we have more shared minis with the cluster than our threshold and this is the cluster we share the most minimizers with
-            shared_perc = calculate_shared_perc(nr_minis, *max_shared);
+            let shared_perc: f64 = calculate_shared_perc(nr_minis, *max_shared);
             if shared_perc > min_shared_minis {
                 shared = true;
                 most_shared_cluster = max_cluster_id as i32;
@@ -209,7 +209,7 @@ fn update_clusters(
     //also add the hashes of the small cluster into the large cluster
     if !small_hs.is_empty() {
         for seed_hash in small_hs {
-            let mut cl_vec = clusters_map.get_mut(seed_hash).unwrap();
+            let cl_vec = clusters_map.get_mut(seed_hash).unwrap();
             if !cl_vec.contains(large_cluster_id) {
                 cl_vec.push(*large_cluster_id);
             }
@@ -251,10 +251,10 @@ fn detect_overlaps(
             .max_by_key(|&(_, value)| value)
         {
             let nr_minis = hashes.len();
-            let shared_perc: f64;
+
             let most_shared_cluster_id = max_cluster_id as i32;
             //calculate the percentage of shared minimizers
-            shared_perc = calculate_shared_perc(nr_minis, *max_shared);
+            let shared_perc: f64 = calculate_shared_perc(nr_minis, *max_shared);
             //We only merge if we share more than min_shared_minis
             if shared_perc > min_shared_minis {
                 if verbose {
@@ -279,12 +279,11 @@ fn detect_overlaps(
                     //if cl_id is smaller than most_shared_cluster_id (we need some kind of merging same size clusters)
                     if *cl_id < most_shared_cluster_id
                         && !small_hs.contains(&most_shared_cluster_id)
+                        && !merge_into.contains(&(*cl_id, most_shared_cluster_id))
                     {
-                        if !merge_into.contains(&(*cl_id, most_shared_cluster_id)) {
-                            //add the info to merge_into that we want to merge cl_id into most_shared_cluster
-                            merge_into.push((*cl_id, most_shared_cluster_id));
-                            small_hs.insert(*cl_id);
-                        }
+                        //add the info to merge_into that we want to merge cl_id into most_shared_cluster
+                        merge_into.push((*cl_id, most_shared_cluster_id));
+                        small_hs.insert(*cl_id);
                     }
                 }
             }
@@ -358,7 +357,7 @@ pub(crate) fn cluster_merging(
         debug!("Post_clustering_ds generated");
         let now_pc2 = Instant::now();
         detect_overlaps(
-            &mut cl_set_map,
+            &cl_set_map,
             cluster_map,
             &mut merge_into,
             min_shared_minis,

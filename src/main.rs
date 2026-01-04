@@ -27,7 +27,6 @@ use std::collections::VecDeque;
 use std::time::Instant;
 
 use std::convert::TryFrom;
-use std::io::Read;
 use std::path::Path;
 
 use memory_stats::memory_stats;
@@ -246,7 +245,7 @@ fn main() {
     let mut t;
     let mut quality_threshold;
     let mut min_shared_minis;
-    let mut cm_mini;
+    let cm_mini;
     //right now we only have two modes( custom settings for variables k, w, s, and t: 'ont' for reads with  3% error rate or more and 'pacbio' for reads with less than 3% error rate)
     if mode == "ont" {
         k = 13;
@@ -336,14 +335,12 @@ fn main() {
                 panic!("Please set k,s and t to fulfill (k-s)/2=t")
             }
         }
-    } else if seeding == "minimizer" {
-        if cli.w.is_some() {
-            w = cli.w.unwrap();
-            if w < k {
-                panic!("Please set w greater than k")
-            } else if w % 2 == 0 {
-                panic!("Please choose w to be odd")
-            }
+    } else if seeding == "minimizer" && cli.w.is_some() {
+        w = cli.w.unwrap();
+        if w < k {
+            panic!("Please set w greater than k")
+        } else if w % 2 == 0 {
+            panic!("Please choose w to be odd")
         }
     }
 
@@ -487,7 +484,7 @@ fn main() {
                         for (minimizer, position) in min_iter {
                             let mini = Minimizer_hashed {
                                 sequence: minimizer,
-                                position: position,
+                                position,
                             };
                             this_minimizers.push(mini);
                         }
@@ -500,7 +497,7 @@ fn main() {
                         for (minimizer, position, _) in min_iter {
                             let mini = Minimizer_hashed {
                                 sequence: minimizer,
-                                position: position,
+                                position,
                             };
                             this_minimizers.push(mini);
                         }
@@ -548,10 +545,8 @@ fn main() {
                     &mut shared_seed_infos_norm_vec,
                 );
                 read_id += 1;
-                if verbose {
-                    if read_id % 1000000 == 0 {
-                        info!("{} reads processed", read_id);
-                    }
+                if verbose && read_id % 1000000 == 0 {
+                    info!("{} reads processed", read_id);
                 }
             }
             info!("Generated {} clusters from clustering", clusters.len());
