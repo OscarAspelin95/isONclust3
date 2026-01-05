@@ -1,23 +1,32 @@
 use crate::structs::Minimizer_hashed;
-use std::time::Instant;
-
 use crate::{ClusterIDMap, SeedMap};
 use log::debug;
+use rstest::rstest;
 use rustc_hash::{FxHashMap, FxHashSet};
+use std::time::Instant;
 
 pub(crate) fn reverse_complement(dna: &str) -> String {
     let reverse_complement: String = dna
         .chars()
-        .rev() //TODO: test whether into_par_iter works here
+        .rev()
         .map(|c| match c {
+            // Canonical.
             'A' => 'T',
             'T' => 'A',
+            'U' => 'A',
             'C' => 'G',
             'G' => 'C',
+            // Soft masked.
+            'a' => 'T',
+            't' => 'A',
+            'u' => 'A',
+            'c' => 'G',
+            'g' => 'C',
+            // This is a bit dangerous.
             _ => c,
         })
-        .clone()
         .collect();
+
     reverse_complement
 }
 
@@ -371,14 +380,16 @@ pub(crate) fn generate_initial_cluster_map(
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    #[test]
-    fn test_reverse_complement() {
-        let rev_comp = reverse_complement("GGGGATCATCAGGGCTA");
-        assert_eq!(rev_comp, "TAGCCCTGATGATCCCC");
-        let rev_comp2 = reverse_complement("ATCGA");
-        assert_eq!(rev_comp2, "TCGAT");
-    }
+#[rstest]
+#[case("A", "T")]
+#[case("G", "C")]
+#[case("T", "A")]
+#[case("C", "G")]
+#[case("U", "A")]
+#[case("GGGGATCATCAGGGCTA", "TAGCCCTGATGATCCCC")]
+#[case("ATCGA", "TCGAT")]
+#[case("aatt", "AATT")]
+#[case("UAU", "ATA")]
+fn test_reverse_complement(#[case] seq: String, #[case] expected: String) {
+    assert_eq!(reverse_complement(&seq), expected);
 }
