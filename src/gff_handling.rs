@@ -14,7 +14,7 @@ use minimizer_iter::MinimizerBuilder;
 use std::path::Path;
 extern crate rayon;
 use crate::clustering;
-use crate::{seeding_and_filtering_seeds, Cluster_ID_Map, Seed_Map};
+use crate::{seeding_and_filtering_seeds, ClusterIDMap, SeedMap};
 use log::debug;
 use std::time::Instant;
 
@@ -44,8 +44,8 @@ fn detect_overlaps(
 fn parse_fasta_and_gen_clusters(
     fasta_path: Option<&str>,
     coords: FxHashMap<String, FxHashMap<i32, Vec<Coord_obj>>>,
-    clusters: &mut Cluster_ID_Map,
-    init_cluster_map: &mut Seed_Map,
+    clusters: &mut ClusterIDMap,
+    init_cluster_map: &mut SeedMap,
     k: usize,
     w: usize,
 ) {
@@ -159,8 +159,8 @@ fn parse_gtf_and_collect_coords(
 pub(crate) fn resolve_gff(
     gff_path: Option<&str>,
     fasta_path: Option<&str>,
-    clusters: &mut Cluster_ID_Map,
-    cluster_map: &mut Seed_Map,
+    clusters: &mut ClusterIDMap,
+    cluster_map: &mut SeedMap,
     k: usize,
     w: usize,
 ) {
@@ -190,8 +190,8 @@ pub(crate) fn resolve_gff(
 pub(crate) fn gff_based_clustering(
     gff_path: Option<&str>,
     fasta_path: Option<&str>,
-    clusters: &mut Cluster_ID_Map,
-    cluster_map: &mut Seed_Map,
+    clusters: &mut ClusterIDMap,
+    cluster_map: &mut SeedMap,
     k: usize,
     w: usize,
     seeding: &str,

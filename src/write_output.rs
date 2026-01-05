@@ -1,5 +1,5 @@
 use crate::structs::FastqRecord_isoncl_init;
-use crate::{file_actions, Cluster_ID_Map};
+use crate::{file_actions, ClusterIDMap};
 use log::debug;
 use log::info;
 use rayon::prelude::*;
@@ -45,7 +45,7 @@ pub(crate) fn write_ordered_fastq(
 
 fn write_final_clusters_tsv(
     outfolder: &Path,
-    clusters: Cluster_ID_Map,
+    clusters: ClusterIDMap,
     id_map: FxHashMap<i32, String>,
     header_cluster_map: &mut FxHashMap<String, i32>,
 ) {
@@ -141,7 +141,7 @@ pub fn path_exists(path: &str) -> bool {
 
 pub(crate) fn write_output(
     outfolder: String,
-    clusters: &Cluster_ID_Map,
+    clusters: &ClusterIDMap,
     fastq: String,
     id_map: FxHashMap<i32, String>,
     n: usize,
